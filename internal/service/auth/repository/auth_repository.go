@@ -44,6 +44,7 @@ func (a AuthRepository) FindUser(input model.InputAuth, typeConnection string) (
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	result, err := scanRows(rows)
 	if err != nil {
