@@ -45,7 +45,7 @@ func (d *Database) SetConnectionDB(typeConnection string) (*sql.DB, error) {
 
 func typeOfDatabase(typeConnection string, db *Database) (*sql.DB, error) {
 	switch typeConnection {
-	case "MYSQL":
+	case "mysql":
 		databaseURL := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", db.DBUsername, db.DBPassword, db.DBHost, db.DBName)
 
 		db, err := sql.Open("mysql", databaseURL)
@@ -55,7 +55,7 @@ func typeOfDatabase(typeConnection string, db *Database) (*sql.DB, error) {
 
 		return db, nil
 
-	case "POSTGRESQL":
+	case "postgresql":
 		databaseURL := fmt.Sprintf("postgresql://%s:%s@%s:5432/%s?sslmode=disable", db.DBUsername, db.DBPassword, db.DBHost, db.DBName)
 
 		db, err := sql.Open("postgres", databaseURL)
