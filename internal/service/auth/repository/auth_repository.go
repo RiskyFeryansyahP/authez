@@ -1,12 +1,11 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
 	"github.com/confus1on/authez/config"
 	"github.com/confus1on/authez/internal/model"
 	"github.com/confus1on/authez/internal/service/auth"
-	"log"
-	"reflect"
 )
 
 type AuthRepository struct {
@@ -20,9 +19,9 @@ func NewAuthRepository() auth.RepositoryAuth {
 }
 
 func (a AuthRepository) FindUser(input model.InputAuth, typeConnection string) (interface{}, error) {
-	result := map[string]interface{}{}
-
 	newDatabase := config.NewDatabase(input.DB)
+
+	var query string
 	
 	// change default value database with new database input value
 	a.Config.DB = newDatabase
@@ -32,15 +31,32 @@ func (a AuthRepository) FindUser(input model.InputAuth, typeConnection string) (
 		return nil, err
 	}
 
-	query := fmt.Sprintf("SELECT * FROM %s WHERE username = $1 AND password = $2", input.DB.TableName)
+	switch typeConnection {
+	case "mysql":
+		query = fmt.Sprintf("SELECT * FROM %s WHERE username = ? AND password = ?", input.DB.TableName)
+		break
+	case "postgresql":
+		query = fmt.Sprintf("SELECT * FROM %s WHERE username = $1 AND password = $2", input.DB.TableName)
+		break
+	}
 
 	rows, err := db.Query(query, input.Username, input.Password)
 	if err != nil {
 		return nil, err
 	}
 
+	result, err := scanRows(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func scanRows(rows *sql.Rows) (map[string]interface{}, error) {
+	result := map[string]interface{}{}
+
 	for rows.Next() {
-		log.Println("1")
 		columns, err := rows.ColumnTypes()
 		if err != nil {
 			return nil, err
@@ -51,8 +67,19 @@ func (a AuthRepository) FindUser(input model.InputAuth, typeConnection string) (
 		values := make([]interface{}, len(columns))
 
 		for key, column := range columns {
-			result[column.Name()] = reflect.New(column.ScanType()).Interface()
-			values[key] = result[column.Name()] // assign value of result pointer into values
+			var valueType interface{} // for checking type data each column
+
+			switch column.DatabaseTypeName() {
+			case "TEXT":
+				valueType = new(string)
+			case "VARCHAR":
+				valueType = new(string)
+			default:
+				valueType = new(interface{})
+			}
+			
+			result[column.Name()] = valueType
+			values[key] = valueType // assign value of result pointer into values
 		}
 
 		err = rows.Scan(values...) // scan values will be affect into result because have same pointer address
