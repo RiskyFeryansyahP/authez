@@ -6,6 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fasthttp/router v1.2.2
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/golang/mock v1.4.3 // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.7.0
 	github.com/valyala/fasthttp v1.14.0
