@@ -1,0 +1,34 @@
+name: API Workflow
+on:
+  pull_request:
+    types: [opened, edited, closed, reopened, synchronize]
+jobs:
+  api-test:
+    name: go test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@master
+      - name: Go '1.14'
+        uses: actions/setup-go@v1
+        with:
+            go-version: '1.14'
+      - name: Run test
+        run: go test -test.v -test.coverprofile=coverage.out -test.covermode=count ./...
+  
+  golang-lint:
+    name: golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@master
+      - name: Go '1.14'
+        uses: actions/setup-go@v1
+        with:
+            go-version: '1.14'
+      - name: Setup golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.23.7
+          echo ::add-path::$HOME/bin
+          echo ::add-path::$(go env GOPATH)/bin # for Go projects
+      - run: golangci-lint run
