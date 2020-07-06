@@ -2,18 +2,22 @@ package usecase
 
 import (
 	"fmt"
+
 	"github.com/confus1on/authez/internal/model"
 	"github.com/confus1on/authez/internal/service/auth"
 )
 
+// AuthUsecase is usecase which has a repository auth in it
 type AuthUsecase struct {
 	AuthRepo auth.RepositoryAuth
 }
 
+// NewAuthUsecase initiate `auth usecase`
 func NewAuthUsecase(authRepo auth.RepositoryAuth) auth.UsecaseAuth {
 	return &AuthUsecase{AuthRepo: authRepo}
 }
 
+// AuthenticationValidation validate input from request before forwarded to repository
 func (a *AuthUsecase) AuthenticationValidation(input model.InputAuth, typeConnection string) (interface{}, error) {
 	if input.DB.DBHost == "" {
 		err := fmt.Errorf("database host cant be empty")

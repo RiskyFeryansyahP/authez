@@ -5,6 +5,7 @@ import (
 	"net"
 )
 
+// GetOutboundIP return a network local address
 func GetOutboundIP() net.IP {
 	// Dial protocol UDP (udp is unlike TCP, udp does not have handshake nor connection)
 	// Dial using udp only for get up the local ip address, address can change whatever (exixted or not existed)
