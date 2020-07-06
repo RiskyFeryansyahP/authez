@@ -38,10 +38,8 @@ func (a AuthRepository) FindUser(input model.InputAuth, typeConnection string) (
 	switch typeConnection {
 	case "mysql":
 		query = fmt.Sprintf("SELECT * FROM %s WHERE username = ? AND password = ?", input.DB.TableName)
-		break
 	case "postgresql":
 		query = fmt.Sprintf("SELECT * FROM %s WHERE username = $1 AND password = $2", input.DB.TableName)
-		break
 	}
 
 	rows, err := db.Query(query, input.Username, input.Password)

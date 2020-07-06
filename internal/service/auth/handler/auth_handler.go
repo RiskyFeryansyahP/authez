@@ -34,7 +34,7 @@ func (a *AuthHandler) Signin(ctx *fasthttp.RequestCtx) {
 	err := json.Unmarshal(body, &input)
 	if err != nil {
 		ctx.Response.Header.SetStatusCode(fasthttp.StatusBadRequest)
-		json.NewEncoder(ctx).Encode(&model.ResponseError{
+		_ = json.NewEncoder(ctx).Encode(&model.ResponseError{
 			Code:    fasthttp.StatusBadRequest,
 			Message: err.Error(),
 		})
@@ -44,7 +44,7 @@ func (a *AuthHandler) Signin(ctx *fasthttp.RequestCtx) {
 	result, err := a.AuthUC.AuthenticationValidation(input, typeConnection)
 	if err != nil {
 		ctx.Response.Header.SetStatusCode(fasthttp.StatusBadRequest)
-		json.NewEncoder(ctx).Encode(&model.ResponseError{
+		_ = json.NewEncoder(ctx).Encode(&model.ResponseError{
 			Code:    fasthttp.StatusBadRequest,
 			Message: err.Error(),
 		})
