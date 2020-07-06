@@ -3,26 +3,30 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/confus1on/authez/config"
 	"github.com/confus1on/authez/internal/model"
 	"github.com/confus1on/authez/internal/service/auth"
 )
 
+// AuthRepository is repository which has a configuration in it
 type AuthRepository struct {
 	Config *config.ConfigMap
 }
 
+// NewAuthRepository initiate configuration and return `AuthRepository struct`
 func NewAuthRepository() auth.RepositoryAuth {
 	cfg := config.NewConfigMap()
 
 	return &AuthRepository{Config: cfg}
 }
 
+// FindUser find user in storage and will be return interface or error
 func (a AuthRepository) FindUser(input model.InputAuth, typeConnection string) (interface{}, error) {
 	newDatabase := config.NewDatabase(input.DB)
 
 	var query string
-	
+
 	// change default value database with new database input value
 	a.Config.DB = newDatabase
 
@@ -34,10 +38,8 @@ func (a AuthRepository) FindUser(input model.InputAuth, typeConnection string) (
 	switch typeConnection {
 	case "mysql":
 		query = fmt.Sprintf("SELECT * FROM %s WHERE username = ? AND password = ?", input.DB.TableName)
-		break
 	case "postgresql":
 		query = fmt.Sprintf("SELECT * FROM %s WHERE username = $1 AND password = $2", input.DB.TableName)
-		break
 	}
 
 	rows, err := db.Query(query, input.Username, input.Password)
@@ -78,7 +80,7 @@ func scanRows(rows *sql.Rows) (map[string]interface{}, error) {
 			default:
 				valueType = new(interface{})
 			}
-			
+
 			result[column.Name()] = valueType
 			values[key] = valueType // assign value of result pointer into values
 		}
