@@ -1,17 +1,19 @@
 package main
 
 import (
+	"log"
+	"os"
+
+	"github.com/confus1on/authez/config"
 	"github.com/confus1on/authez/internal/service/auth/handler"
 	"github.com/confus1on/authez/internal/service/auth/repository"
 	"github.com/confus1on/authez/internal/service/auth/usecase"
 	"github.com/confus1on/authez/util"
 	fasthttprouter "github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
-	"log"
-	"os"
 )
 
-func main()  {
+func main() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
@@ -23,7 +25,13 @@ func main()  {
 
 	router := fasthttprouter.New()
 
-	authRepo := repository.NewAuthRepository()
+	cfg := config.NewConfigMap()
+	db, err := cfg.SetConnection()
+	if err != nil {
+		log.Fatalf("soemthing error: %+v", err)
+	}
+
+	authRepo := repository.NewAuthRepository(db)
 	authUsecase := usecase.NewAuthUsecase(authRepo)
 	handler.NewAuthHandler(authUsecase, router)
 
