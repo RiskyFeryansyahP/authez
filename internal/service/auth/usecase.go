@@ -6,5 +6,5 @@ import (
 
 // UsecaseAuth is abstract will be use in usecase package
 type UsecaseAuth interface {
-	AuthenticationValidation(input model.InputAuth, typeConnection string) (interface{}, error)
+	AuthenticationValidation(input model.InputAuth) (interface{}, error)
 }

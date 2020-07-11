@@ -18,14 +18,12 @@ type AuthHandler struct {
 func NewAuthHandler(authUC auth.UsecaseAuth, router *fasthttprouter.Router) {
 	authHandler := &AuthHandler{AuthUC: authUC}
 
-	router.POST("/v1/signin/{type}", authHandler.Signin)
+	router.POST("/v1/signin", authHandler.Signin)
 }
 
 // Signin http method
 func (a *AuthHandler) Signin(ctx *fasthttp.RequestCtx) {
 	var input model.InputAuth
-
-	typeConnection := ctx.UserValue("type").(string)
 
 	body := ctx.Request.Body()
 
@@ -41,7 +39,7 @@ func (a *AuthHandler) Signin(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	result, err := a.AuthUC.AuthenticationValidation(input, typeConnection)
+	result, err := a.AuthUC.AuthenticationValidation(input)
 	if err != nil {
 		ctx.Response.Header.SetStatusCode(fasthttp.StatusBadRequest)
 		_ = json.NewEncoder(ctx).Encode(&model.ResponseError{

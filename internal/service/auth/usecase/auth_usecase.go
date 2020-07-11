@@ -18,28 +18,8 @@ func NewAuthUsecase(authRepo auth.RepositoryAuth) auth.UsecaseAuth {
 }
 
 // AuthenticationValidation validate input from request before forwarded to repository
-func (a *AuthUsecase) AuthenticationValidation(input model.InputAuth, typeConnection string) (interface{}, error) {
-	if input.DB.DBHost == "" {
-		err := fmt.Errorf("database host cant be empty")
-		return nil, err
-	}
-
-	if input.DB.DBUsername == "" {
-		err := fmt.Errorf("database username cant be empty")
-		return nil, err
-	}
-
-	if input.DB.DBPassword == "" {
-		err := fmt.Errorf("database password cant be empty")
-		return nil, err
-	}
-
-	if input.DB.DBName == "" {
-		err := fmt.Errorf("database name cant be empty")
-		return nil, err
-	}
-
-	if input.DB.TableName == "" {
+func (a *AuthUsecase) AuthenticationValidation(input model.InputAuth) (interface{}, error) {
+	if input.TableName == "" {
 		err := fmt.Errorf("table name cant be empty")
 		return nil, err
 	}
@@ -54,7 +34,7 @@ func (a *AuthUsecase) AuthenticationValidation(input model.InputAuth, typeConnec
 		return nil, err
 	}
 
-	result, err := a.AuthRepo.FindUser(input, typeConnection)
+	result, err := a.AuthRepo.FindUser(input)
 	if err != nil {
 		return nil, err
 	}
