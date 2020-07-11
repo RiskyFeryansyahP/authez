@@ -1,8 +1,11 @@
 package config
 
 import (
+	"database/sql"
+	"fmt"
 	"os"
 
+	_ "github.com/go-sql-driver/mysql"    // mysql driver
 	_ "github.com/joho/godotenv/autoload" // autoload environment variables
 )
 
@@ -27,4 +30,24 @@ func NewConfigMap() *ConfigMap {
 			TableName:  "users",
 		},
 	}
+}
+
+func (c *ConfigMap) SetConnection() (*sql.DB, error) {
+	databaseURL := fmt.Sprintf("%s:%s@tcp(%s:8889)/%s", c.DB.DBUsername, c.DB.DBPassword, c.DB.DBHost, c.DB.DBName)
+
+	db, err := sql.Open("mysql", databaseURL)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	db.SetConnMaxLifetime(0)
+	db.SetMaxIdleConns(5)
+	db.SetMaxOpenConns(5)
+
+	return db, nil
 }
