@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"log"
 	"testing"
 
 	"github.com/confus1on/authez/internal/model"
@@ -19,10 +20,16 @@ func mockConnection(t *testing.T) *sql.DB {
 
 func mockData(db *sql.DB) {
 	stmt, _ := db.Prepare("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username VARCHAR, password VARCHAR, fullname TEXT)")
-	stmt.Exec()
+	_ , err := stmt.Exec()
+	if err != nil {
+		log.Printf("error executing create table: %+v", err)
+	}
 
 	stmt, _ = db.Prepare("INSERT INTO users(id, username, password, fullname) VALUES (?, ?, ?, ?)")
-	stmt.Exec(1, "risky", "risky123", "risky feryansyah")
+	_, err = stmt.Exec(1, "risky", "risky123", "risky feryansyah")
+	if err != nil {
+		log.Printf("error executing insert table: %+v", err)
+	}
 }
 
 func TestAuthRepository_FindUser(t *testing.T) {
