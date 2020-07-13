@@ -29,15 +29,7 @@ func (a *AuthHandler) Signin(ctx *fasthttp.RequestCtx) {
 
 	ctx.Response.Header.SetContentType("application/json")
 
-	err := json.Unmarshal(body, &input)
-	if err != nil {
-		ctx.Response.Header.SetStatusCode(fasthttp.StatusBadRequest)
-		_ = json.NewEncoder(ctx).Encode(&model.ResponseError{
-			Code:    fasthttp.StatusBadRequest,
-			Message: err.Error(),
-		})
-		return
-	}
+	_ = json.Unmarshal(body, &input)
 
 	result, err := a.AuthUC.AuthenticationValidation(input)
 	if err != nil {
