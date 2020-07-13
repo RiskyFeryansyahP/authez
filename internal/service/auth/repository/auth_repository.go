@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/confus1on/authez/internal/model"
 	"github.com/confus1on/authez/internal/service/auth"
 )
@@ -36,6 +37,8 @@ func (a *AuthRepository) FindUser(input model.InputAuth) (interface{}, error) {
 		return nil, fmt.Errorf("invalid username or password")
 	}
 
+	// log.Println(*result["fullname"].(*string))
+
 	return result, nil
 }
 
@@ -43,10 +46,7 @@ func scanRows(rows *sql.Rows) (map[string]interface{}, error) {
 	result := map[string]interface{}{}
 
 	for rows.Next() {
-		columns, err := rows.ColumnTypes()
-		if err != nil {
-			return nil, err
-		}
+		columns, _ := rows.ColumnTypes()
 
 		// Scan needs an array of pointers to the values it is setting
 		// This creates the object and sets the values correctly
@@ -68,7 +68,7 @@ func scanRows(rows *sql.Rows) (map[string]interface{}, error) {
 			values[key] = valueType // assign value of result pointer into values
 		}
 
-		err = rows.Scan(values...) // scan values will be affect into result because have same pointer address
+		err := rows.Scan(values...) // scan values will be affect into result because have same pointer address
 		if err != nil {
 			return nil, err
 		}
