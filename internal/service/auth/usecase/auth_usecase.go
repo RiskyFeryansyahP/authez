@@ -41,3 +41,7 @@ func (a *AuthUsecase) AuthenticationValidation(input model.InputAuth) (interface
 
 	return result, nil
 }
+
+func (a *AuthUsecase) GoogleAuthentication() (interface{}, error) {
+	panic("implement me")
+}
