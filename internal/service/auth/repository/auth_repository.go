@@ -42,6 +42,10 @@ func (a *AuthRepository) FindUser(input model.InputAuth) (interface{}, error) {
 	return result, nil
 }
 
+func (a *AuthRepository) GoogleUser() (interface{}, error) {
+	panic("implement me")
+}
+
 func scanRows(rows *sql.Rows) (map[string]interface{}, error) {
 	result := map[string]interface{}{}
 
