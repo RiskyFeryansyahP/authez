@@ -5,8 +5,10 @@
 package mock
 
 import (
+	config "github.com/confus1on/authez/config"
 	model "github.com/confus1on/authez/internal/model"
 	gomock "github.com/golang/mock/gomock"
+	http "net/http"
 	reflect "reflect"
 )
 
@@ -46,4 +48,19 @@ func (m *MockRepositoryAuth) FindUser(input model.InputAuth) (interface{}, error
 func (mr *MockRepositoryAuthMockRecorder) FindUser(input interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUser", reflect.TypeOf((*MockRepositoryAuth)(nil).FindUser), input)
+}
+
+// GoogleUser mocks base method
+func (m *MockRepositoryAuth) GoogleUser(config *config.ConfigMap, code string) (*http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GoogleUser", config, code)
+	ret0, _ := ret[0].(*http.Response)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GoogleUser indicates an expected call of GoogleUser
+func (mr *MockRepositoryAuthMockRecorder) GoogleUser(config, code interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GoogleUser", reflect.TypeOf((*MockRepositoryAuth)(nil).GoogleUser), config, code)
 }
