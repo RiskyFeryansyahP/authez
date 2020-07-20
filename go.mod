@@ -12,5 +12,5 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.0
 	github.com/stretchr/testify v1.6.1
 	github.com/valyala/fasthttp v1.14.0
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 )
