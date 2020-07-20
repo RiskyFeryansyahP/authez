@@ -1,17 +1,13 @@
 package handler
 
 import (
-	"encoding/base64"
 	"encoding/json"
-	"log"
-	"math/rand"
-	"time"
-
 	"github.com/confus1on/authez/config"
 	"github.com/confus1on/authez/internal/model"
 	"github.com/confus1on/authez/internal/service/auth"
 	fasthttprouter "github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
+	"log"
 )
 
 // AuthHandler is handler which embedded usecase auth
@@ -86,7 +82,7 @@ func signinGoogle(ctx *fasthttp.RequestCtx) {
 	ctx.Redirect(url, fasthttp.StatusTemporaryRedirect)
 }
 
-func generateStateAuthCookie(ctx *fasthttp.RequestCtx) string {
+/* func generateStateAuthCookie(ctx *fasthttp.RequestCtx) string {
 	expiration := time.Now().Add(365 * 24 * time.Hour)
 
 	b := make([]byte, 16)
@@ -104,4 +100,4 @@ func generateStateAuthCookie(ctx *fasthttp.RequestCtx) string {
 	ctx.Response.Header.SetCookie(cookie)
 
 	return state
-}
+} */
