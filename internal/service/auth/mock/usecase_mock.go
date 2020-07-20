@@ -5,6 +5,7 @@
 package mock
 
 import (
+	config "github.com/confus1on/authez/config"
 	model "github.com/confus1on/authez/internal/model"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
@@ -46,4 +47,19 @@ func (m *MockUsecaseAuth) AuthenticationValidation(input model.InputAuth) (inter
 func (mr *MockUsecaseAuthMockRecorder) AuthenticationValidation(input interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AuthenticationValidation", reflect.TypeOf((*MockUsecaseAuth)(nil).AuthenticationValidation), input)
+}
+
+// GoogleAuthentication mocks base method
+func (m *MockUsecaseAuth) GoogleAuthentication(config *config.ConfigMap, state, code string) (interface{}, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GoogleAuthentication", config, state, code)
+	ret0, _ := ret[0].(interface{})
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GoogleAuthentication indicates an expected call of GoogleAuthentication
+func (mr *MockUsecaseAuthMockRecorder) GoogleAuthentication(config, state, code interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GoogleAuthentication", reflect.TypeOf((*MockUsecaseAuth)(nil).GoogleAuthentication), config, state, code)
 }

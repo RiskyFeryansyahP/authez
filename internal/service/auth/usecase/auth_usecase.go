@@ -1,8 +1,12 @@
 package usecase
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io/ioutil"
 
+	"github.com/confus1on/authez/config"
 	"github.com/confus1on/authez/internal/model"
 	"github.com/confus1on/authez/internal/service/auth"
 )
@@ -40,4 +44,24 @@ func (a *AuthUsecase) AuthenticationValidation(input model.InputAuth) (interface
 	}
 
 	return result, nil
+}
+
+// GoogleAuthentication check whether state params from google is valid
+func (a *AuthUsecase) GoogleAuthentication(config *config.ConfigMap, state, code string) (interface{}, error) {
+	var response interface{}
+
+	if state != "oauthstate" {
+		return nil, errors.New("invalid oauth google state")
+	}
+
+	result, err := a.AuthRepo.GoogleUser(config, code)
+	if err != nil {
+		return nil, err
+	}
+
+	body, _ := ioutil.ReadAll(result.Body)
+
+	_ = json.Unmarshal(body, &response)
+
+	return response, nil
 }

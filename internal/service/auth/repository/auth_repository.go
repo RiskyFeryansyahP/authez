@@ -1,9 +1,12 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+	"net/http"
 
+	"github.com/confus1on/authez/config"
 	"github.com/confus1on/authez/internal/model"
 	"github.com/confus1on/authez/internal/service/auth"
 )
@@ -40,6 +43,23 @@ func (a *AuthRepository) FindUser(input model.InputAuth) (interface{}, error) {
 	// log.Println(*result["fullname"].(*string))
 
 	return result, nil
+}
+
+// GoogleUser request to google oauth2 to find user
+func (a *AuthRepository) GoogleUser(config *config.ConfigMap, code string) (*http.Response, error) {
+	token, err := config.GoogleOauth.Exchange(context.Background(), code)
+	if err != nil {
+		return nil, fmt.Errorf("code exchange wrong: %s", err.Error())
+	}
+
+	url := fmt.Sprintf("https://www.googleapis.com/oauth2/v2/userinfo?access_token=%s", token.AccessToken)
+
+	response, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
+	}
+
+	return response, nil
 }
 
 func scanRows(rows *sql.Rows) (map[string]interface{}, error) {

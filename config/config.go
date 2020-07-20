@@ -3,6 +3,8 @@ package config
 import (
 	"database/sql"
 	"fmt"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"    // mysql driver
@@ -12,6 +14,7 @@ import (
 // ConfigMap is configuration option for authentication
 type ConfigMap struct {
 	DB *Database
+	GoogleOauth *oauth2.Config
 }
 
 // NewConfigMap return a configmap with a default value in table name (`users`)
@@ -29,9 +32,19 @@ func NewConfigMap() *ConfigMap {
 			DBName:     dbName,
 			TableName:  "users",
 		},
+		GoogleOauth: &oauth2.Config{
+			ClientID:     os.Getenv("ClientID"),
+			ClientSecret: os.Getenv("ClientSecret"),
+			Endpoint:     google.Endpoint,
+			RedirectURL:  "http://localhost:8080/auth/google/callback",
+			Scopes:       []string{
+				"https://www.googleapis.com/auth/userinfo.profile",
+			},
+		},
 	}
 }
 
+// SetConnection set a new connection database
 func (c *ConfigMap) SetConnection() (*sql.DB, error) {
 	databaseURL := fmt.Sprintf("%s:%s@tcp(%s:8889)/%s", c.DB.DBUsername, c.DB.DBPassword, c.DB.DBHost, c.DB.DBName)
 
